@@ -7,7 +7,9 @@ Mac'te de Windows'ta da çalışır. Arayüz tarayıcıda açılır ama her şey
 ## Başlatma
 
 - **Mac:** `YT İndirici` uygulamasına çift tıkla. İstersen Dock'a sürükleyip oradan da açabilirsin.
-  macOS ilk seferde izin vermezse uygulamaya sağ tıkla → **Aç** → **Aç**.
+  macOS ilk seferde "açılamıyor" uyarısı verebilir. Bunun sebebi uygulamanın App Store'dan gelmemesi. O zaman şunlardan birini yap:
+  - **Sistem Ayarları → Gizlilik ve Güvenlik** sayfasının en altına in ve "YT İndirici" satırındaki **Yine de Aç** düğmesine bas.
+  - Eski macOS sürümlerinde uygulamaya sağ tıkla → **Aç** → **Aç** demen yeterli.
 - **Windows:** `YT İndirici.vbs` dosyasına çift tıkla. İstersen sağ tık → **Kısayol oluştur** ile masaüstüne kısayol koyabilirsin.
   SmartScreen uyarı verirse **Ek bilgi** → **Yine de çalıştır**'a tıkla.
 
