@@ -1,0 +1,9 @@
+# Her bilgisayarda başlatıcı tarafından yeniden kurulur
+.venv/
+.ffmpeg/
+__pycache__/
+# İndirilen dosyalar ve kayıtlar
+indirilenler/*
+!indirilenler/.gitkeep
+.yt-indirici.log
+.DS_Store
