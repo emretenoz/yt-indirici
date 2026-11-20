@@ -216,7 +216,7 @@ $("go").addEventListener("click", async () => {
 
 $("quit").addEventListener("click", async () => {
   if (!confirm("Uygulama kapatılsın mı? Tekrar açmak için YT İndirici'ye çift tıklaman yeterli.")) return;
-  try { await fetch("/api/quit", { method: "POST", body: "{}" }); } catch {}
+  try { await fetch("/api/quit", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }); } catch {}
   document.querySelector("main").innerHTML = "<h1>YT İndirici kapatıldı</h1><p class='sub'>Bu sekmeyi kapatabilirsin. Tekrar açmak için YT İndirici'ye çift tıkla.</p>";
 });
 

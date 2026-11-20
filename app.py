@@ -13,7 +13,7 @@ import uuid
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
 BASE = Path(__file__).resolve().parent
 DOWNLOADS = BASE / "indirilenler"
@@ -188,6 +188,24 @@ class Handler(BaseHTTPRequestHandler):
         host = host.rsplit(":", 1)[0] if not host.startswith("[") else host.split("]")[0] + "]"
         return host in ALLOWED_HOSTS
 
+    def same_origin_json(self):
+        """POST isteği gerçekten bizim sayfamızdan mı geliyor? (CSRF koruması)
+
+        Başka bir site, tarayıcı üzerinden 127.0.0.1'e "basit" bir POST gönderebilir. Host başlığı o zaman
+        da 127.0.0.1 olduğu için allowed() bunu durdurmaz. Bu yüzden ayrıca bakıyoruz:
+        - Origin başlığı (tarayıcı her POST'ta ekler, sayfa değiştiremez) bizim adreslerimizden biri olmalı.
+        - Content-Type application/json olmalı. Başka bir site bunu ancak tarayıcının önce izin sorduğu
+          (preflight/OPTIONS) bir istekle gönderebilir; biz OPTIONS'a izin vermediğimiz için istek hiç gelmez.
+        """
+        ctype = (self.headers.get("Content-Type") or "").split(";")[0].strip().lower()
+        if ctype != "application/json":
+            return False
+        origin = self.headers.get("Origin")
+        if origin is None:  # tarayıcı dışı araçlar (curl vb.) Origin göndermez; zaten yalnızca bu bilgisayardan
+            return True
+        host = urlsplit(origin).hostname or ""
+        return host in ALLOWED_HOSTS or f"[{host}]" in ALLOWED_HOSTS
+
     def handle_one_request(self):
         try:
             super().handle_one_request()
@@ -237,6 +255,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json({"error": "Bulunamadı"}, 404)
 
     def do_POST(self):
+        if not self.same_origin_json():
+            return self.send_json({"error": "İzin verilmeyen istek"}, 403)
         try:
             data = self.read_json()
             if self.path == "/api/quit":
